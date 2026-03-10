@@ -1,0 +1,166 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/findings-schema.json",
+  "title": "Code Review Findings",
+  "description": "Schema for code review findings with severity and category classification",
+  "type": "object",
+  "required": ["findings", "metadata"],
+  "properties": {
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/finding"
+      }
+    },
+    "metadata": {
+      "$ref": "#/definitions/metadata"
+    },
+    "summary": {
+      "$ref": "#/definitions/summary"
+    }
+  },
+  "definitions": {
+    "severity": {
+      "type": "string",
+      "enum": ["Critical", "High", "Medium", "Low"],
+      "description": "Four-tier risk classification"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["security", "performance", "best-practices", "bugs"],
+      "description": "Type of finding"
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["code_snippet", "line_number"],
+      "properties": {
+        "code_snippet": {
+          "type": "string",
+          "description": "The problematic code snippet"
+        },
+        "line_number": {
+          "type": "integer",
+          "description": "Line number where issue was found"
+        },
+        "file_path": {
+          "type": "string",
+          "description": "Path to the file containing the issue"
+        },
+        "context": {
+          "type": "string",
+          "description": "Additional surrounding code context"
+        },
+        "tool_source": {
+          "type": "string",
+          "description": "Source of the finding (e.g., 'llm', 'bandit', 'ruff')"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "required": ["id", "severity", "category", "title", "description", "evidence", "recommendation"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the finding"
+        },
+        "severity": {
+          "$ref": "#/definitions/severity"
+        },
+        "category": {
+          "$ref": "#/definitions/category"
+        },
+        "title": {
+          "type": "string",
+          "description": "Brief title summarizing the finding"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the issue"
+        },
+        "evidence": {
+          "$ref": "#/definitions/evidence"
+        },
+        "recommendation": {
+          "type": "string",
+          "description": "Suggested fix or remediation"
+        },
+        "cwe_id": {
+          "type": "string",
+          "description": "Common Weakness Enumeration ID (for security findings)"
+        },
+        "cve_id": {
+          "type": "string",
+          "description": "CVE ID if applicable"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "medium", "low"],
+          "description": "Confidence level of the finding"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["repository", "commit_hash", "analysis_timestamp"],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "description": "Repository name or URL"
+        },
+        "commit_hash": {
+          "type": "string",
+          "description": "Git commit hash analyzed"
+        },
+        "branch": {
+          "type": "string",
+          "description": "Git branch analyzed"
+        },
+        "analysis_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of analysis completion"
+        },
+        "analyzer_version": {
+          "type": "string",
+          "description": "Version of the code review agent"
+        },
+        "files_analyzed": {
+          "type": "integer",
+          "description": "Number of files analyzed"
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "total_findings": {
+          "type": "integer"
+        },
+        "by_severity": {
+          "type": "object",
+          "properties": {
+            "Critical": {"type": "integer"},
+            "High": {"type": "integer"},
+            "Medium": {"type": "integer"},
+            "Low": {"type": "integer"}
+          }
+        },
+        "by_category": {
+          "type": "object",
+          "properties": {
+            "security": {"type": "integer"},
+            "performance": {"type": "integer"},
+            "best-practices": {"type": "integer"},
+            "bugs": {"type": "integer"}
+          }
+        },
+        "risk_score": {
+          "type": "number",
+          "description": "Aggregated risk score for the repository"
+        }
+      }
+    }
+  }
+}
