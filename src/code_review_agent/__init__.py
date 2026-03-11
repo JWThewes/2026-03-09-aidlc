@@ -8,6 +8,7 @@ from code_review_agent.models import (
     Finding,
     Severity,
 )
+from .commit_hash import CommitHashExtractor, extract_commit_hash, extract_commit_info
 
 __all__ = [
     "CodeReviewAgent",
@@ -19,4 +20,7 @@ __all__ = [
     "CodeAnalysisResult",
     "Finding",
     "Severity",
+    "CommitHashExtractor",
+    "extract_commit_hash",
+    "extract_commit_info",
 ]
